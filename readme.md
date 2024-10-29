@@ -8,4 +8,5 @@ Check out my channel to learn how to make games in JS : https://youtube.com/@jsl
 
 
 CREDITS
+
 Font used comes from : https://www.dafont.com/mania.font
