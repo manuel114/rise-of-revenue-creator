@@ -5,3 +5,7 @@ Live demo : https://jslegend.itch.io/sonic-ring-run
 Made in JavaScript with the Kaplay game library.
 
 Check out my channel to learn how to make games in JS : https://youtube.com/@jslegenddev
+
+
+CREDITS
+Font used comes from : https://www.dafont.com/mania.font
