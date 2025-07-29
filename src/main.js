@@ -6,9 +6,9 @@ import mainMenu from "./scenes/mainMenu";
 
 // Load background assets for different chapters
 k.loadSprite("sea-of-sameness-bg", "graphics/sea-of-sameness-bg.png");
-k.loadSprite("culture-bg", "graphics/culture-bg.png");
-k.loadSprite("community-bg", "graphics/community-bg.png");
-k.loadSprite("creation-bg", "graphics/creation-bg.png");
+k.loadSprite("chapter-2-bg", "graphics/chapter-2-bg.png");
+k.loadSprite("chapter-3-bg", "graphics/chapter-3-bg.png");
+k.loadSprite("chapter-4-bg", "graphics/chapter-4-bg.png");
 
 // Load platform assets
 k.loadSprite("grey-platforms", "graphics/grey-platforms.png");

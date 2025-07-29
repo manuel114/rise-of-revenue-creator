@@ -19,34 +19,40 @@ export default function game() {
       bg: "sea-of-sameness-bg",
       platforms: "grey-platforms",
       color: k.Color.fromArray([128, 128, 128]), // Grey
-      quote: "Mediocrity clings to the past while the future accelerates..."
+      quote: "The silent villain: sameness syndrome"
     },
     2: {
-      name: "Culture",
-      bg: "culture-bg", 
+      name: "The Culture Cradle",
+      bg: "chapter-2-bg", 
       platforms: "neon-platforms",
       color: k.Color.fromArray([0, 255, 255]), // Cyan
-      quote: "Innovation is our language. We don't settle for the status quo."
+      quote: "Culture is our heartbeat - authenticity, innovation, relentless improvement"
     },
     3: {
-      name: "Community",
-      bg: "community-bg",
+      name: "The Community Core",
+      bg: "chapter-3-bg",
       platforms: "network-platforms", 
       color: k.Color.fromArray([255, 0, 255]), // Magenta
-      quote: "Collaboration over competition. We lift each other up."
+      quote: "Collective wisdom, access, support, and shared success"
     },
     4: {
-      name: "Creation",
-      bg: "creation-bg",
+      name: "The Creation Forge",
+      bg: "chapter-4-bg",
       platforms: "forge-platforms",
       color: k.Color.fromArray([255, 255, 0]), // Yellow
-      quote: "Creation isn't just what we do; it's who we are."
+      quote: "Creation is who we are - building, long-term value, empowerment"
     }
   };
 
-  const bgPieceWidth = 1920 * 2; // Account for scale factor
+  // Background pieces for parallax effect
+  const bgPieceWidth = 1529 * 2; // Actual image width (1529px) * scale factor (2)
   const bgPieces = [
-    k.add([k.sprite(chapters[currentChapter].bg), k.pos(0, 0), k.scale(2), k.opacity(0.8)]),
+    k.add([
+      k.sprite(chapters[currentChapter].bg),
+      k.pos(0, 0),
+      k.scale(2),
+      k.opacity(0.8),
+    ]),
     k.add([
       k.sprite(chapters[currentChapter].bg),
       k.pos(bgPieceWidth, 0),
@@ -219,13 +225,21 @@ export default function game() {
   k.onUpdate(() => {
     if (visionary.isGrounded()) scoreMultiplier = 0;
 
+    // Ensure both background pieces use the same sprite for current chapter
+    if (bgPieces[0].sprite !== chapters[currentChapter].bg) {
+      bgPieces[0].useSprite(chapters[currentChapter].bg);
+    }
+    if (bgPieces[1].sprite !== chapters[currentChapter].bg) {
+      bgPieces[1].useSprite(chapters[currentChapter].bg);
+    }
+
     if (bgPieces[1].pos.x < 0) {
-      bgPieces[0].moveTo(bgPieces[1].pos.x + bgPieceWidth * 2, 0);
+      bgPieces[0].moveTo(bgPieces[1].pos.x + bgPieceWidth, 0);
       bgPieces.push(bgPieces.shift());
     }
 
     bgPieces[0].move(-100, 0);
-    bgPieces[1].moveTo(bgPieces[0].pos.x + bgPieceWidth * 2, 0);
+    bgPieces[1].moveTo(bgPieces[0].pos.x + bgPieceWidth, 0);
 
     // for jump effect
     bgPieces[0].moveTo(bgPieces[0].pos.x, -visionary.pos.y / 10 - 50);
