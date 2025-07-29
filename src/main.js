@@ -4,30 +4,46 @@ import game from "./scenes/game";
 import gameover from "./scenes/gameover";
 import mainMenu from "./scenes/mainMenu";
 
-k.loadSprite("chemical-bg", "graphics/chemical-bg.png");
-k.loadSprite("platforms", "graphics/platforms.png");
-k.loadSprite("sonic", "graphics/sonic.png", {
-  sliceX: 8,
+// Load background assets for different chapters
+k.loadSprite("sea-of-sameness-bg", "graphics/sea-of-sameness-bg.png");
+k.loadSprite("culture-bg", "graphics/culture-bg.png");
+k.loadSprite("community-bg", "graphics/community-bg.png");
+k.loadSprite("creation-bg", "graphics/creation-bg.png");
+
+// Load platform assets
+k.loadSprite("grey-platforms", "graphics/grey-platforms.png");
+k.loadSprite("neon-platforms", "graphics/neon-platforms.png");
+k.loadSprite("network-platforms", "graphics/network-platforms.png");
+k.loadSprite("forge-platforms", "graphics/forge-platforms.png");
+
+// Load player character - The Visionary
+k.loadSprite("visionary", "graphics/visionary.png", {
+  sliceX: 6,
   sliceY: 2,
   anims: {
-    run: { from: 0, to: 7, loop: true, speed: 30 },
-    jump: { from: 8, to: 15, loop: true, speed: 100 },
+    run: { from: 0, to: 5, loop: true, speed: 30 },
+    jump: { from: 6, to: 11, loop: true, speed: 100 },
   },
 });
-k.loadSprite("ring", "graphics/ring.png", {
-  sliceX: 16,
-  sliceY: 1,
-  anims: {
-    spin: { from: 0, to: 15, loop: true, speed: 30 },
-  },
-});
-k.loadSprite("motobug", "graphics/motobug.png", {
+
+// Load single villain - The AI Agent
+k.loadSprite("ai-agent", "graphics/ai-agent.png", {
   sliceX: 5,
   sliceY: 1,
   anims: {
     run: { from: 0, to: 4, loop: true, speed: 8 },
   },
 });
+
+// Load collectible - Authenticity Spark
+k.loadSprite("authenticity-spark", "graphics/authenticity-spark.png", {
+  sliceX: 5,
+  sliceY: 1,
+  anims: {
+    spin: { from: 0, to: 4, loop: true, speed: 30 },
+  },
+});
+
 k.loadFont("mania", "fonts/mania.ttf");
 k.loadSound("destroy", "sounds/Destroy.wav");
 k.loadSound("hurt", "sounds/Hurt.wav");

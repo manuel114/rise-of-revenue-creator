@@ -1,5 +1,5 @@
 import k from "../kaplayCtx";
-import { makeSonic } from "../entities/sonic";
+import { makeVisionary } from "../entities/visionary";
 
 export default function mainMenu() {
   if (!k.getData("best-score")) k.setData("best-score", 0);
@@ -7,9 +7,9 @@ export default function mainMenu() {
 
   const bgPieceWidth = 1920;
   const bgPieces = [
-    k.add([k.sprite("chemical-bg"), k.pos(0, 0), k.scale(2), k.opacity(0.8)]),
+    k.add([k.sprite("sea-of-sameness-bg"), k.pos(0, 0), k.scale(2), k.opacity(0.8)]),
     k.add([
-      k.sprite("chemical-bg"),
+      k.sprite("sea-of-sameness-bg"),
       k.pos(1920, 0),
       k.scale(2),
       k.opacity(0.8),
@@ -17,23 +17,23 @@ export default function mainMenu() {
   ];
 
   const platforms = [
-    k.add([k.sprite("platforms"), k.pos(0, 450), k.scale(4)]),
-    k.add([k.sprite("platforms"), k.pos(384, 450), k.scale(4)]),
+    k.add([k.sprite("grey-platforms"), k.pos(0, 450), k.scale(4)]),
+    k.add([k.sprite("grey-platforms"), k.pos(384, 450), k.scale(4)]),
   ];
 
   k.add([
-    k.text("SONIC RING RUN", { font: "mania", size: 96 }),
+    k.text("THE RISE OF THE REVENUE CREATOR", { font: "mania", size: 96 }),
     k.anchor("center"),
     k.pos(k.center().x, 200),
   ]);
 
   k.add([
-    k.text("Press Space/Click/Touch to Play", { font: "mania", size: 32 }),
+    k.text("Press Space/Click/Touch to Begin Your Journey", { font: "mania", size: 32 }),
     k.anchor("center"),
     k.pos(k.center().x, k.center().y - 200),
   ]);
 
-  makeSonic(k.vec2(200, 745));
+  makeVisionary(k.vec2(200, 745));
   const gameSpeed = 4000;
   k.onUpdate(() => {
     if (bgPieces[1].pos.x < 0) {

@@ -1,15 +1,15 @@
 import k from "../kaplayCtx";
 
-export function makeSonic(pos) {
-  const sonic = k.add([
-    k.sprite("sonic", { anim: "run" }),
-    k.scale(4),
+export function makeVisionary(pos) {
+  const visionary = k.add([
+    k.sprite("visionary", { anim: "run" }),
+    k.scale(0.5), // Increased scale from 0.4 to 0.5
     k.area(),
     k.anchor("center"),
-    k.pos(pos),
+    k.pos(pos), // No Y offset - let physics handle positioning
     k.body({ jumpForce: 1700 }),
     {
-      ringCollectUI: null,
+      sparkCollectUI: null,
       setControls() {
         k.onButtonPress("jump", () => {
           if (this.isGrounded()) {
@@ -27,12 +27,12 @@ export function makeSonic(pos) {
     },
   ]);
 
-  sonic.ringCollectUI = sonic.add([
-    k.text("", { font: "mania", size: 24 }),
+  visionary.sparkCollectUI = visionary.add([
+    k.text("", { font: "mania", size: 48 }), // Increased font size
     k.color(255, 255, 0),
     k.anchor("center"),
     k.pos(30, -10),
   ]);
 
-  return sonic;
-}
+  return visionary;
+} 

@@ -4,33 +4,19 @@ export default function gameover(citySfx) {
   citySfx.paused = true;
   let bestScore = k.getData("best-score");
   const currentScore = k.getData("current-score");
-
-  const rankGrades = ["F", "E", "D", "C", "B", "A", "S"];
-  const rankValues = [50, 80, 100, 200, 300, 400, 500];
-
-  let currentRank = "F";
-  let bestRank = "F";
-  for (let i = 0; i < rankValues.length; i++) {
-    if (rankValues[i] < currentScore) {
-      currentRank = rankGrades[i];
-    }
-
-    if (rankValues[i] < bestScore) {
-      bestRank = rankGrades[i];
-    }
-  }
+  const currentChapter = k.getData("current-chapter") || 1;
 
   if (bestScore < currentScore) {
     k.setData("best-score", currentScore);
     bestScore = currentScore;
-    bestRank = currentRank;
   }
 
   k.add([
-    k.text("GAME OVER", { font: "mania", size: 96 }),
+    k.text("REVENUE CREATOR JOURNEY ENDED", { font: "mania", size: 96 }),
     k.anchor("center"),
-    k.pos(k.center().x, k.center().y - 300),
+    k.pos(k.center().x, k.center().y - 350),
   ]);
+
   k.add([
     k.text(`BEST SCORE : ${bestScore}`, {
       font: "mania",
@@ -48,42 +34,44 @@ export default function gameover(citySfx) {
     k.pos(k.center().x + 400, k.center().y - 200),
   ]);
 
-  const bestRankBox = k.add([
-    k.rect(400, 400, { radius: 4 }),
-    k.color(0, 0, 0),
-    k.area(),
+  k.add([
+    k.text(`CHAPTERS COMPLETED : ${Math.min(currentChapter, 4)}/4`, {
+      font: "mania",
+      size: 48,
+    }),
     k.anchor("center"),
-    k.outline(6, k.Color.fromArray([255, 255, 255])),
-    k.pos(k.center().x - 400, k.center().y + 50),
+    k.pos(k.center().x, k.center().y - 100),
   ]);
 
-  bestRankBox.add([
-    k.text(bestRank, { font: "mania", size: 100 }),
-    k.anchor("center"),
-  ]);
+  // Add motivational message based on performance
+  let message = "";
+  if (currentScore < 50) {
+    message = "The Sea of Sameness awaits. Rise above mediocrity!";
+  } else if (currentScore < 200) {
+    message = "You're breaking free from the template!";
+  } else if (currentScore < 400) {
+    message = "Innovation flows through you!";
+  } else {
+    message = "You are a true Revenue Creator!";
+  }
 
-  const currentRankBox = k.add([
-    k.rect(400, 400, { radius: 4 }),
-    k.color(0, 0, 0),
-    k.area(),
+  k.add([
+    k.text(message, {
+      font: "mania",
+      size: 32,
+    }),
     k.anchor("center"),
-    k.outline(6, k.Color.fromArray([255, 255, 255])),
-    k.pos(k.center().x + 400, k.center().y + 50),
-  ]);
-
-  currentRankBox.add([
-    k.text(currentRank, { font: "mania", size: 100 }),
-    k.anchor("center"),
+    k.pos(k.center().x, k.center().y + 100),
   ]);
 
   k.wait(1, () => {
     k.add([
-      k.text("Press Space/Click/Touch to Play Again", {
+      k.text("Press Space/Click/Touch to Continue Your Journey", {
         font: "mania",
         size: 64,
       }),
       k.anchor("center"),
-      k.pos(k.center().x, k.center().y + 350),
+      k.pos(k.center().x, k.center().y + 200),
     ]);
     k.onButtonPress("jump", () => k.go("game"));
   });

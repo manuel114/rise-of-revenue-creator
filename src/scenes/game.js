@@ -1,16 +1,54 @@
 import k from "../kaplayCtx";
-import { makeSonic } from "../entities/sonic";
-import { makeMotobug } from "../entities/motobug";
-import { makeRing } from "../entities/ring";
+import { makeVisionary } from "../entities/visionary";
+import { makeAIAgent } from "../entities/ai-agent";
+import { makeAuthenticitySpark } from "../entities/authenticity-spark";
 
 export default function game() {
   const citySfx = k.play("city", { volume: 0.2, loop: true });
   k.setGravity(3100);
-  const bgPieceWidth = 1920;
+  
+  // Chapter system
+  let currentChapter = 1;
+  let chapterProgress = 0;
+  const chapterThresholds = [100, 200, 300, 400]; // Score thresholds for chapter progression
+  
+  // Chapter configurations
+  const chapters = {
+    1: {
+      name: "The Sea of Sameness",
+      bg: "sea-of-sameness-bg",
+      platforms: "grey-platforms",
+      color: k.Color.fromArray([128, 128, 128]), // Grey
+      quote: "Mediocrity clings to the past while the future accelerates..."
+    },
+    2: {
+      name: "Culture",
+      bg: "culture-bg", 
+      platforms: "neon-platforms",
+      color: k.Color.fromArray([0, 255, 255]), // Cyan
+      quote: "Innovation is our language. We don't settle for the status quo."
+    },
+    3: {
+      name: "Community",
+      bg: "community-bg",
+      platforms: "network-platforms", 
+      color: k.Color.fromArray([255, 0, 255]), // Magenta
+      quote: "Collaboration over competition. We lift each other up."
+    },
+    4: {
+      name: "Creation",
+      bg: "creation-bg",
+      platforms: "forge-platforms",
+      color: k.Color.fromArray([255, 255, 0]), // Yellow
+      quote: "Creation isn't just what we do; it's who we are."
+    }
+  };
+
+  const bgPieceWidth = 1920 * 2; // Account for scale factor
   const bgPieces = [
-    k.add([k.sprite("chemical-bg"), k.pos(0, 0), k.scale(2), k.opacity(0.8)]),
+    k.add([k.sprite(chapters[currentChapter].bg), k.pos(0, 0), k.scale(2), k.opacity(0.8)]),
     k.add([
-      k.sprite("chemical-bg"),
+      k.sprite(chapters[currentChapter].bg),
       k.pos(bgPieceWidth, 0),
       k.scale(2),
       k.opacity(0.8),
@@ -18,13 +56,13 @@ export default function game() {
   ];
 
   const platforms = [
-    k.add([k.sprite("platforms"), k.pos(0, 450), k.scale(4)]),
-    k.add([k.sprite("platforms"), k.pos(384, 450), k.scale(4)]),
+    k.add([k.sprite(chapters[currentChapter].platforms), k.pos(0, 450), k.scale(4)]),
+    k.add([k.sprite(chapters[currentChapter].platforms), k.pos(384, 450), k.scale(4)]),
   ];
 
-  const sonic = makeSonic(k.vec2(200, 745));
-  sonic.setControls();
-  sonic.setEvents();
+  const visionary = makeVisionary(k.vec2(200, 745));
+  visionary.setControls();
+  visionary.setEvents();
 
   const controlsText = k.add([
     k.text("Press Space/Click/Touch to Jump!", {
@@ -40,43 +78,59 @@ export default function game() {
     dismissControlsAction.cancel();
   });
 
+  // Chapter display
+  const chapterText = k.add([
+    k.text(`Chapter ${currentChapter}: ${chapters[currentChapter].name}`, { 
+      font: "mania", 
+      size: 48 
+    }),
+    k.pos(20, 80),
+    k.color(chapters[currentChapter].color),
+  ]);
+
   const scoreText = k.add([
-    k.text("SCORE : 0", { font: "mania", size: 72 }),
+    k.text("INNOVATION SPARKS : 0", { font: "mania", size: 72 }),
     k.pos(20, 20),
   ]);
+  
   let score = 0;
   let scoreMultiplier = 0;
-  sonic.onCollide("ring", (ring) => {
+  
+  visionary.onCollide("authenticity-spark", (spark) => {
     k.play("ring", { volume: 0.5 });
-    k.destroy(ring);
+    k.destroy(spark);
     score++;
-    scoreText.text = `SCORE : ${score}`;
-    sonic.ringCollectUI.text = "+1";
+    chapterProgress++;
+    scoreText.text = `INNOVATION SPARKS : ${score}`;
+    visionary.sparkCollectUI.text = "+1";
     k.wait(1, () => {
-      sonic.ringCollectUI.text = "";
+      visionary.sparkCollectUI.text = "";
     });
   });
-  sonic.onCollide("enemy", (enemy) => {
-    if (!sonic.isGrounded()) {
+  
+  visionary.onCollide("enemy", (enemy) => {
+    if (!visionary.isGrounded()) {
       k.play("destroy", { volume: 0.5 });
       k.play("hyper-ring", { volume: 0.5 });
       k.destroy(enemy);
-      sonic.play("jump");
-      sonic.jump();
+      visionary.play("jump");
+      visionary.jump();
       scoreMultiplier += 1;
       score += 10 * scoreMultiplier;
-      scoreText.text = `SCORE : ${score}`;
+      chapterProgress += 10 * scoreMultiplier;
+      scoreText.text = `INNOVATION SPARKS : ${score}`;
       if (scoreMultiplier === 1)
-        sonic.ringCollectUI.text = `+${10 * scoreMultiplier}`;
-      if (scoreMultiplier > 1) sonic.ringCollectUI.text = `x${scoreMultiplier}`;
+        visionary.sparkCollectUI.text = `+${10 * scoreMultiplier}`;
+      if (scoreMultiplier > 1) visionary.sparkCollectUI.text = `x${scoreMultiplier}`;
       k.wait(1, () => {
-        sonic.ringCollectUI.text = "";
+        visionary.sparkCollectUI.text = "";
       });
       return;
     }
 
     k.play("hurt", { volume: 0.5 });
     k.setData("current-score", score);
+    k.setData("current-chapter", currentChapter);
     k.go("gameover", citySfx);
   });
 
@@ -85,42 +139,73 @@ export default function game() {
     gameSpeed += 50;
   });
 
-  const spawnMotoBug = () => {
-    const motobug = makeMotobug(k.vec2(1950, 773));
-    motobug.onUpdate(() => {
+  // Chapter progression check
+  k.loop(0.1, () => {
+    if (currentChapter < 4 && chapterProgress >= chapterThresholds[currentChapter - 1]) {
+      currentChapter++;
+      chapterProgress = 0;
+      
+      // Update background and platforms
+      bgPieces[0].useSprite(chapters[currentChapter].bg);
+      bgPieces[1].useSprite(chapters[currentChapter].bg);
+      platforms[0].useSprite(chapters[currentChapter].platforms);
+      platforms[1].useSprite(chapters[currentChapter].platforms);
+      
+      // Update chapter display
+      chapterText.text = `Chapter ${currentChapter}: ${chapters[currentChapter].name}`;
+      chapterText.color = chapters[currentChapter].color;
+      
+      // Show chapter transition message
+      const transitionText = k.add([
+        k.text(chapters[currentChapter].quote, { 
+          font: "mania", 
+          size: 32 
+        }),
+        k.anchor("center"),
+        k.pos(k.center().x, k.center().y + 100),
+        k.color(chapters[currentChapter].color),
+      ]);
+      
+      k.wait(3, () => {
+        k.destroy(transitionText);
+      });
+    }
+  });
+
+  const spawnAIAgent = () => {
+    const enemy = makeAIAgent(k.vec2(1950, 773));
+    enemy.onUpdate(() => {
       if (gameSpeed < 3000) {
-        motobug.move(-(gameSpeed + 300), 0);
+        enemy.move(-(gameSpeed + 300), 0);
         return;
       }
-      motobug.move(-gameSpeed, 0);
+      enemy.move(-gameSpeed, 0);
     });
 
-    motobug.onExitScreen(() => {
-      if (motobug.pos.x < 0) k.destroy(motobug);
+    enemy.onExitScreen(() => {
+      if (enemy.pos.x < 0) k.destroy(enemy);
     });
 
     const waitTime = k.rand(0.5, 2.5);
-
-    k.wait(waitTime, spawnMotoBug);
+    k.wait(waitTime, spawnAIAgent);
   };
 
-  spawnMotoBug();
+  spawnAIAgent();
 
-  const spawnRing = () => {
-    const ring = makeRing(k.vec2(1950, 745));
-    ring.onUpdate(() => {
-      ring.move(-gameSpeed, 0);
+  const spawnAuthenticitySpark = () => {
+    const spark = makeAuthenticitySpark(k.vec2(1950, 745));
+    spark.onUpdate(() => {
+      spark.move(-gameSpeed, 0);
     });
-    ring.onExitScreen(() => {
-      if (ring.pos.x < 0) k.destroy(ring);
+    spark.onExitScreen(() => {
+      if (spark.pos.x < 0) k.destroy(spark);
     });
 
     const waitTime = k.rand(0.5, 3);
-
-    k.wait(waitTime, spawnRing);
+    k.wait(waitTime, spawnAuthenticitySpark);
   };
 
-  spawnRing();
+  spawnAuthenticitySpark();
 
   k.add([
     k.rect(1920, 300),
@@ -132,7 +217,7 @@ export default function game() {
   ]);
 
   k.onUpdate(() => {
-    if (sonic.isGrounded()) scoreMultiplier = 0;
+    if (visionary.isGrounded()) scoreMultiplier = 0;
 
     if (bgPieces[1].pos.x < 0) {
       bgPieces[0].moveTo(bgPieces[1].pos.x + bgPieceWidth * 2, 0);
@@ -143,8 +228,8 @@ export default function game() {
     bgPieces[1].moveTo(bgPieces[0].pos.x + bgPieceWidth * 2, 0);
 
     // for jump effect
-    bgPieces[0].moveTo(bgPieces[0].pos.x, -sonic.pos.y / 10 - 50);
-    bgPieces[1].moveTo(bgPieces[1].pos.x, -sonic.pos.y / 10 - 50);
+    bgPieces[0].moveTo(bgPieces[0].pos.x, -visionary.pos.y / 10 - 50);
+    bgPieces[1].moveTo(bgPieces[1].pos.x, -visionary.pos.y / 10 - 50);
 
     if (platforms[1].pos.x < 0) {
       platforms[0].moveTo(platforms[1].pos.x + platforms[1].width * 4, 450);
