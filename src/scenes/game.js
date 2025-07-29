@@ -10,7 +10,7 @@ export default function game() {
   // Chapter system
   let currentChapter = 1;
   let chapterProgress = 0;
-  const chapterThresholds = [100, 200, 300, 400]; // Score thresholds for chapter progression
+  const chapterThresholds = [50, 100, 150, 200]; // Score thresholds for chapter progression
   
   // Chapter configurations
   const chapters = {
@@ -152,10 +152,10 @@ export default function game() {
       chapterProgress = 0;
       
       // Update background and platforms
-      bgPieces[0].useSprite(chapters[currentChapter].bg);
-      bgPieces[1].useSprite(chapters[currentChapter].bg);
-      platforms[0].useSprite(chapters[currentChapter].platforms);
-      platforms[1].useSprite(chapters[currentChapter].platforms);
+      bgPieces[0].sprite = chapters[currentChapter].bg;
+      bgPieces[1].sprite = chapters[currentChapter].bg;
+      platforms[0].sprite = chapters[currentChapter].platforms;
+      platforms[1].sprite = chapters[currentChapter].platforms;
       
       // Update chapter display
       chapterText.text = `Chapter ${currentChapter}: ${chapters[currentChapter].name}`;
@@ -227,10 +227,10 @@ export default function game() {
 
     // Ensure both background pieces use the same sprite for current chapter
     if (bgPieces[0].sprite !== chapters[currentChapter].bg) {
-      bgPieces[0].useSprite(chapters[currentChapter].bg);
+      bgPieces[0].sprite = chapters[currentChapter].bg;
     }
     if (bgPieces[1].sprite !== chapters[currentChapter].bg) {
-      bgPieces[1].useSprite(chapters[currentChapter].bg);
+      bgPieces[1].sprite = chapters[currentChapter].bg;
     }
 
     if (bgPieces[1].pos.x < 0) {
